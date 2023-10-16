@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -76,6 +77,17 @@ public class CompraResource {
 	@PreAuthorize("hasAuthority('ROLE_REMOVER_COMPRA') and hasAuthority('SCOPE_write')")
 	public void remover(@PathVariable Long id) {
 		compraRepository.deleteById(id);
+	}
+	
+	@PutMapping("/{id}")
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_COMPRA')")
+	public ResponseEntity<Compra> atualizar(@PathVariable Long id, @Valid @RequestBody Compra compra) {
+		try {
+			Compra compraSalva = compraService.atualizar(id, compra);
+			return ResponseEntity.ok(compraSalva);
+		} catch (IllegalArgumentException e) {
+			return ResponseEntity.notFound().build();
+		}
 	}
 	
 	@ExceptionHandler({ PessoaInexistenteOuInativaException.class })
