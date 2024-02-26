@@ -1,12 +1,12 @@
 package com.materialreaproveitavel.api.resource;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.materialreaproveitavel.api.event.RecursoCriadoEvent;
 import com.materialreaproveitavel.api.model.Material;
 import com.materialreaproveitavel.api.repository.MaterialRepository;
+import com.materialreaproveitavel.api.repository.filter.MaterialFilter;
+import com.materialreaproveitavel.api.repository.projection.ResumoMaterial;
 
 @RestController
 @RequestMapping("/materiais")
@@ -34,9 +36,21 @@ public class MaterialResource {
 	private ApplicationEventPublisher publisher;
 	
 	
+	/*
+	 * @GetMapping public List<Material> listar(){ return
+	 * materialRepository.findAll(); }
+	 */
+	
 	@GetMapping
-	public List<Material> listar(){
-		return materialRepository.findAll();
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_MATERIAL') and hasAuthority('SCOPE_read')")
+	public Page<Material> pesquisar(MaterialFilter materialFilter, Pageable pageable) {
+		return materialRepository.filtrar(materialFilter, pageable);
+	}
+	
+	@GetMapping(params = "resumo")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_MATERIAL') and hasAuthority('SCOPE_read')")
+	public Page<ResumoMaterial> resumir(MaterialFilter lancamentoFilter, Pageable pageable) {
+		return materialRepository.resumir(lancamentoFilter, pageable);
 	}
 	
 	@PostMapping

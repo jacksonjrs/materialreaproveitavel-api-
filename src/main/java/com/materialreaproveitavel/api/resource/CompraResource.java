@@ -33,6 +33,9 @@ import com.materialreaproveitavel.api.exceptionhandler.MaterialreaproveitavelExc
 import com.materialreaproveitavel.api.model.Compra;
 import com.materialreaproveitavel.api.repository.CompraRepository;
 import com.materialreaproveitavel.api.repository.filter.CompraFilter;
+import com.materialreaproveitavel.api.repository.filter.MaterialFilter;
+import com.materialreaproveitavel.api.repository.projection.ResumoCompra;
+import com.materialreaproveitavel.api.repository.projection.ResumoMaterial;
 import com.materialreaproveitavel.api.service.CompraService;
 
 @RestController
@@ -55,6 +58,12 @@ public class CompraResource {
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_COMPRA') and hasAuthority('SCOPE_read')" )
 	public Page<Compra> pesquisar (CompraFilter compraFilter, Pageable pageable) {
 		return compraRepository.filtrar(compraFilter, pageable);
+	}
+	
+	@GetMapping(params = "resumo")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_COMPRA') and hasAuthority('SCOPE_read')")
+	public Page<ResumoCompra> resumir(CompraFilter lancamentoFilter, Pageable pageable) {
+		return compraRepository.resumir(lancamentoFilter, pageable);
 	}
 	
 	@GetMapping("/{id}")

@@ -22,7 +22,7 @@ public class CompraService {
 	private CompraRepository compraRepository;
 
 	public Compra salvar(Compra compra) {
-		Optional<Pessoa> pessoa = pessoaRepository.findById(compra.getPessoa().getId());
+		Optional<Pessoa> pessoa = pessoaRepository.findById(compra.getMaterial().getVendedor().getId());
 		if (pessoa.isEmpty() || pessoa.get().isInativo()) {
 			throw new PessoaInexistenteOuInativaException();
 		}
@@ -33,7 +33,7 @@ public class CompraService {
 	
 	public Compra atualizar(Long codigo, Compra compra) {
 		Compra compraSalvo = buscarCompraExistente(codigo);
-		if (!compra.getPessoa().equals(compraSalvo.getPessoa())) {
+		if (!compra.getMaterial().getVendedor().equals(compraSalvo.getMaterial().getVendedor())) {
 			validarPessoa(compra);
 		}
 
@@ -44,8 +44,8 @@ public class CompraService {
 
 	private void validarPessoa(Compra compra) {
 		Optional<Pessoa> pessoa = null;
-		if (compra.getPessoa().getId() != null) {
-			pessoa = pessoaRepository.findById(compra.getPessoa().getId());
+		if (compra.getMaterial().getVendedor().getId() != null) {
+			pessoa = pessoaRepository.findById(compra.getMaterial().getVendedor().getId());
 		}
 
 		if (pessoa.isEmpty() || pessoa.get().isInativo()) {

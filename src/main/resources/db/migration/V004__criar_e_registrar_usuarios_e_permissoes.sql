@@ -23,15 +23,14 @@ INSERT INTO usuario (id, nome, email, senha) values (2, 'Maria Silva', 'maria@al
 
 INSERT INTO permissao (id, descricao) values (1, 'ROLE_CADASTRAR_MATERIAL');
 INSERT INTO permissao (id, descricao) values (2, 'ROLE_PESQUISAR_MATERIAL');
-INSERT INTO permissao (id, descricao) values (2, 'ROLE_REMOVER_MATERIAL');
-
+INSERT INTO permissao (id, descricao) values (3, 'ROLE_REMOVER_MATERIAL');
 INSERT INTO permissao (id, descricao) values (4, 'ROLE_CADASTRAR_PESSOA');
-INSERT INTO permissao (id, descricao) values (5, 'ROLE_REMOVER_PESSOA');
-INSERT INTO permissao (id, descricao) values (6, 'ROLE_PESQUISAR_PESSOA');
-
+INSERT INTO permissao (id, descricao) values (5, 'ROLE_PESQUISAR_PESSOA');
+INSERT INTO permissao (id, descricao) values (6, 'ROLE_REMOVER_PESSOA');
 INSERT INTO permissao (id, descricao) values (7, 'ROLE_CADASTRAR_COMPRA');
-INSERT INTO permissao (id, descricao) values (8, 'ROLE_REMOVER_COMPRA');
-INSERT INTO permissao (id, descricao) values (9, 'ROLE_PESQUISAR_COMPRA');
+INSERT INTO permissao (id, descricao) values (8, 'ROLE_PESQUISAR_COMPRA');
+INSERT INTO permissao (id, descricao) values (9, 'ROLE_REMOVER_COMPRA');
+
 
 -- admin
 INSERT INTO usuario_permissao (id_usuario, id_permissao) values (1, 1);
@@ -42,6 +41,7 @@ INSERT INTO usuario_permissao (id_usuario, id_permissao) values (1, 5);
 INSERT INTO usuario_permissao (id_usuario, id_permissao) values (1, 6);
 INSERT INTO usuario_permissao (id_usuario, id_permissao) values (1, 7);
 INSERT INTO usuario_permissao (id_usuario, id_permissao) values (1, 8);
+INSERT INTO usuario_permissao (id_usuario, id_permissao) values (1, 9);
 
 -- maria
 INSERT INTO usuario_permissao (id_usuario, id_permissao) values (2, 2);

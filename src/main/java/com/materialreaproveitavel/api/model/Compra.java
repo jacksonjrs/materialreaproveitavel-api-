@@ -60,8 +60,8 @@ public class Compra {
 
 	@NotNull
 	@ManyToOne
-	@JoinColumn(name = "id_pessoa")
-	private Pessoa pessoa;
+	@JoinColumn(name = "id_comprador")
+	private Pessoa comprador;
 
 	public Long getId() {
 		return id;
@@ -141,14 +141,14 @@ public class Compra {
 
 	public void setMaterial(Material material) {
 		this.material = material;
+	}	
+	
+	public Pessoa getComprador() {
+		return comprador;
 	}
 
-	public Pessoa getPessoa() {
-		return pessoa;
-	}
-
-	public void setPessoa(Pessoa pessoa) {
-		this.pessoa = pessoa;
+	public void setComprador(Pessoa comprador) {
+		this.comprador = comprador;
 	}
 
 	@Override

@@ -18,7 +18,10 @@ import org.springframework.util.ObjectUtils;
 
 import com.materialreaproveitavel.api.model.Compra;
 import com.materialreaproveitavel.api.model.Compra_;
+import com.materialreaproveitavel.api.model.Material_;
+import com.materialreaproveitavel.api.model.Pessoa_;
 import com.materialreaproveitavel.api.repository.filter.CompraFilter;
+import com.materialreaproveitavel.api.repository.projection.ResumoCompra;
 
 
 public class CompraRepositoryImpl implements CompraRepositoryQuery {
@@ -66,7 +69,7 @@ public class CompraRepositoryImpl implements CompraRepositoryQuery {
 		return predicates.toArray(new Predicate[predicates.size()]);
 	}
 	
-	private void adicionarRestricoesDePaginacao(TypedQuery<Compra> query, Pageable pageable) {
+	private void adicionarRestricoesDePaginacao(TypedQuery<?> query, Pageable pageable) {
 		int paginaAtual = pageable.getPageNumber();
 		int totalRegistrosPorPagina = pageable.getPageSize();
 		int primeiroRegistroDaPagina = paginaAtual * totalRegistrosPorPagina;
@@ -75,16 +78,41 @@ public class CompraRepositoryImpl implements CompraRepositoryQuery {
 		query.setMaxResults(totalRegistrosPorPagina);
 	}
 	
-	private Long total(CompraFilter lancamentoFilter) {
+	private Long total(CompraFilter compraFilter) {
 		CriteriaBuilder builder = manager.getCriteriaBuilder();
 		CriteriaQuery<Long> criteria = builder.createQuery(Long.class);
 		Root<Compra> root = criteria.from(Compra.class);
 		
-		Predicate[] predicates = criarRestricoes(lancamentoFilter, builder, root);
+		Predicate[] predicates = criarRestricoes(compraFilter, builder, root);
 		criteria.where(predicates);
 		
 		criteria.select(builder.count(root));
 		return manager.createQuery(criteria).getSingleResult();
 	}
+
+	@Override
+	public Page<ResumoCompra> resumir(CompraFilter compraFilter, Pageable pageable) {
+		CriteriaBuilder builder = manager.getCriteriaBuilder();
+		CriteriaQuery<ResumoCompra> criteria = builder.createQuery(ResumoCompra.class);
+		Root<Compra> root = criteria.from(Compra.class);
+		
+		criteria.select(builder.construct(ResumoCompra.class
+				, root.get(Compra_.material).get(Material_.nome)
+				, root.get(Compra_.material).get(Material_.descricao)
+				, root.get(Compra_.dataCriacao)
+				, root.get(Compra_.dataEntrega)
+				, root.get(Compra_.material).get(Material_.preco)
+				, root.get(Compra_.material).get(Material_.vendedor).get(Pessoa_.nome)));
+		
+		Predicate[] predicates = criarRestricoes(compraFilter, builder, root);
+		criteria.where(predicates);
+		
+		TypedQuery<ResumoCompra> query = manager.createQuery(criteria);
+		adicionarRestricoesDePaginacao(query, pageable);
+		
+		return new PageImpl<>(query.getResultList(), pageable, total(compraFilter));
+	}
+	
+	
 
 }
